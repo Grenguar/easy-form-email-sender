@@ -25,3 +25,8 @@ functions:
       - http:
           path: form-api/sendform
           method: post
+# package:
+#   exclude:
+#     - node_modules/**
+#     - "!node_modules/aws-lambda/**"
+#     - "!node_modules/aws-sdk/**"

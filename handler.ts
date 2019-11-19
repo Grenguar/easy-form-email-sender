@@ -1,24 +1,33 @@
 import { Handler, Context, Callback } from "aws-lambda";
 import { sendEmail } from "./src/sender";
-// import { TO, FROM } from "./src/env";
 
 interface HelloResponse {
   statusCode: number;
   body: string;
 }
+// Tilda specific
+const testWebhook: String = "test=test";
 
 const send: Handler = async (event: any, context: Context, callback: Callback) => {
-  // const formData = JSON.parse(event.body);
-  // console.log(formData);
-  // let responseData: string[] = [];
-  // for (var key in formData) {
-  //   if (formData.hasOwnProperty(key)) {
-  //     var val = formData[key];
-  //     responseData.push(`${key} : ${val}`);
-  //   }
-  // }
-  console.log(event.body);
-  sendEmail(process.env.TO!, `NEW Form arrived: ${Math.random() * 100}`, JSON.stringify(event.body), process.env.FROM!);
+  const isTest = event.body === testWebhook;
+  const decodedBody = decodeURI(event.body);
+  const topic = isTest
+    ? "Test Letter"
+    : `New Lead from GeekExp: ${decodedBody
+        .split("&")[0]
+        .split("=")[1]
+        .replace("+", " ")}`;
+  const formFields = decodedBody.split("&");
+  const formFieldsHtml: string[] = [];
+  formFieldsHtml.push("<h1>Lead Details</h1>");
+  formFields.forEach(field => {
+    if (field.match(/(www|http:|https:)+[^\s]+[\w]/) !== null) {
+      formFieldsHtml.push(`<a href="${field}" target="_blank">${field}</a>`);
+    } else {
+      formFieldsHtml.push(`<p>${field.replace("=", ": ").replace("+", " ")}</p><br>`);
+    }
+  });
+  sendEmail(process.env.TO!, topic, formFieldsHtml.join(""), process.env.FROM!);
   const response: HelloResponse = {
     statusCode: 200,
     body: "ok"

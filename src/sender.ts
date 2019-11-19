@@ -11,7 +11,7 @@ export const sendEmail = (to: string, subject: string, message: string, from: st
       Body: {
         Html: {
           Charset: "UTF-8",
-          Data: `<p>${message}</p>`
+          Data: `<div>${message}</div>`
         }
       },
       Subject: {
