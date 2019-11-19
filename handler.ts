@@ -21,13 +21,15 @@ const send: Handler = async (event: any, context: Context, callback: Callback) =
   const formFieldsHtml: string[] = [];
   formFieldsHtml.push("<h1>Lead Details</h1>");
   formFields.forEach(field => {
+    let newField = "";
     if (field.match(/(www|http:|https:)+[^\s]+[\w]/) !== null) {
-      formFieldsHtml.push(`<a href="${field}" target="_blank">${field}</a>`);
+      newField = `<a href="${field}" target="_blank">${field}</a>`;
     } else {
-      formFieldsHtml.push(`<p>${field.replace("=", ": ").replace("+", " ")}</p><br>`);
+      newField = `<p>${field.replace("+", " ")}</p><br>`;
     }
+    formFieldsHtml.push(newField);
   });
-  sendEmail(process.env.TO!, topic, formFieldsHtml.join(""), process.env.FROM!);
+  sendEmail(process.env.TO!, topic, JSON.stringify(formFieldsHtml.join("").replace("=", ": ")), process.env.FROM!);
   const response: HelloResponse = {
     statusCode: 200,
     body: "ok"
