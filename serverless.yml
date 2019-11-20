@@ -7,6 +7,7 @@ provider:
   name: aws
   runtime: nodejs10.x
   region: eu-west-1
+  stage: ${opt:stage, 'dev'}
   logRetentionInDays: 3
   iamRoleStatements:
     - Effect: "Allow"
@@ -15,8 +16,8 @@ provider:
       Resource:
         - "*"
   environment:
-    TO: ${file(./env.json):TO}
-    FROM: ${file(./env.json):FROM}
+    TO: ${file(./env.json):TO, env:TO}
+    FROM: ${file(./env.json):FROM, env:FROM}
 
 functions:
   sendEmail:
