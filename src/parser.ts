@@ -20,10 +20,10 @@ export default class Parser {
         const emailString: string[] = newField.split("=");
         const link = `<a href="${emailString[1]}" target="_blank">here</a>`;
         newField = this.wrapInHtmlTag(`CV: ${link}`, "p");
-      } else if (newField.match(/([P|p]hone)/g) !== null) {
-        newField = `<p>${newField}</p>`;
+      } else if (newField.match(/phone/gi) !== null) {
+        newField = `<p>${newField.replace(/\=/, ": ")}</p>`;
       } else {
-        newField = `${this.wrapInHtmlTag(`${newField.replace("+", " ")}`, "p")}`;
+        newField = `${this.wrapInHtmlTag(`${newField.replace(/\+/g, " ").replace(/\=/, ": ")}`, "p")}`;
       }
       formFieldsHtml.push(newField);
     });
