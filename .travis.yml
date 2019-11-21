@@ -5,5 +5,6 @@ cache:
   directories:
     - node_modules
 script:
+  - yarn test
   - yarn global add serverless
   - yarn deploy --stage prod
